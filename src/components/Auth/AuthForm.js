@@ -22,12 +22,16 @@ const AuthForm = () => {
     const enteredPassword = passwordInputRef.current.value;
 setIsLoading(true);
     // ADD VALIDATION 
+    let url;
 if (isLogin) {
-
+url = 
+'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDR5r9uwWzJcVPWZg0R7ObmVhssRRPvGGo'
 } else {
-  fetch(
-    'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDR5r9uwWzJcVPWZg0R7ObmVhssRRPvGGo',
-  {
+  url =
+  'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDR5r9uwWzJcVPWZg0R7ObmVhssRRPvGGo'
+}
+
+  fetch( url,{
     method: 'POST',
     body: JSON.stringify({
       email: enteredEmail,
@@ -40,7 +44,7 @@ if (isLogin) {
   }).then(res => {
     setIsLoading(false);
     if (res.ok) {
-       // show some 
+       return res.json();
     } else {
       return res.json().then(data => {
         let errorMessage  = 'Authentication Error';
@@ -48,13 +52,16 @@ if (isLogin) {
           errorMessage = data.error.message;
         }
         alert(errorMessage);
+        throw new Error(errorMessage);
        
       });
     }
+  }).then(data => {
+    console.log(data)
+  }).catch((err) => {
+    alert(err.message);
   });
-}
-  
-  };
+};
 
   
 
